@@ -1,0 +1,30 @@
+# Secrets - never commit these
+.env
+*.key
+*.pem
+*.crt
+
+# AdGuard runtime data
+adguard/confdir/
+adguard/workdir/
+
+# Snippetbox data
+snippetbox/app/
+
+# Homer generated assets (keep config.yml but ignore downloaded icons etc)
+homer/assets/icons/
+homer/assets/tools/
+homer/assets/manifest.json
+homer/assets/themes/
+
+# Grafana & Prometheus persistent data
+monitoring/grafana/data/
+monitoring/prometheus/data/
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
