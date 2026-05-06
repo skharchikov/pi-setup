@@ -31,6 +31,7 @@ homeassistant/config/www/*
 !homeassistant/config/rest.yaml
 !homeassistant/config/themes/
 !homeassistant/config/blueprints/
+!homeassistant/config/dashboards/
 
 # Logs
 *.log
