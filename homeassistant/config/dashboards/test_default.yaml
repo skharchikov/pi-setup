@@ -17,11 +17,10 @@ views:
             alignment: center
             grid_options:
               columns: full
-              rows: 1
             chips:
               - type: weather
                 entity: weather.forecast_home
-                show_conditions: false
+                show_conditions: true
                 show_temperature: true
                 visibility:
                   - condition: state
@@ -30,7 +29,10 @@ views:
               - type: template
                 icon: mdi:lightbulb-on
                 icon_color: amber
-                content: "{{ states.light | selectattr('state','eq','on') | list | count }}"
+                content: "{{ states.light | selectattr('state','eq','on') | list | count }} on"
+                tap_action:
+                  action: navigate
+                  navigation_path: "#lights"
               - type: template
                 icon: mdi:motion-sensor
                 icon_color: >
@@ -41,6 +43,14 @@ views:
                   {% set s1 = states('binary_sensor.tze200_3towulqd_ts0601_occupancy') == 'on' %}
                   {% set s2 = states('binary_sensor.human_presence_sensor_2') == 'on' %}
                   {{ ([s1, s2] | select | list | count) ~ '/2' }}
+              - type: template
+                icon: mdi:web
+                icon_color: teal
+                content: "{{ states('sensor.vodafone_hg8247x6_8n_10_gateway_external_ip') }}"
+                visibility:
+                  - condition: state
+                    entity: sensor.vodafone_hg8247x6_8n_10_gateway_external_ip
+                    state_not: unavailable
 
       - type: grid
         visibility:
@@ -279,21 +289,3 @@ views:
                 entity: weather.forecast_home
                 state_not: unavailable
 
-      - type: grid
-        visibility:
-          - condition: state
-            entity: sensor.vodafone_hg8247x6_8n_10_gateway_external_ip
-            state_not: unavailable
-        cards:
-          - type: heading
-            heading: Network
-            heading_style: subtitle
-            icon: mdi:web
-          - type: custom:mushroom-entity-card
-            entity: sensor.vodafone_hg8247x6_8n_10_gateway_external_ip
-            name: WAN IP
-            icon: mdi:web
-            icon_color: teal
-            fill_container: true
-            grid_options:
-              columns: full

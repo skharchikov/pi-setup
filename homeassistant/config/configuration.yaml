@@ -22,7 +22,7 @@ http:
   trusted_proxies:
     - 172.17.0.2
 
-# Lovelace: default + map + dashboard-test stay UI-managed; test-default is YAML
+# Lovelace: default + map stay UI-managed; named dashboards are YAML
 lovelace:
   mode: storage
   dashboards:
@@ -30,4 +30,11 @@ lovelace:
       mode: yaml
       filename: dashboards/test_default.yaml
       title: Mobile
+      icon: mdi:cellphone
+      show_in_sidebar: true
+    dashboard-test:
+      mode: yaml
+      filename: dashboards/dashboard_test.yaml
+      title: All Devices
+      icon: mdi:home-variant
       show_in_sidebar: true

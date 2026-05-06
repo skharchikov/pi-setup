@@ -1,2 +1,492 @@
-strategy:
-  type: areas
+title: All Devices
+views:
+  - title: Home
+    path: home
+    type: sections
+    max_columns: 3
+    sections:
+      - type: grid
+        column_span: 3
+        cards:
+          - type: heading
+            heading: Overview
+            heading_style: title
+            icon: mdi:home
+          - type: custom:mushroom-chips-card
+            alignment: center
+            chips:
+              - type: entity
+                entity: person.sergei_kharchikov
+                content_info: name
+                icon_color: blue
+              - type: weather
+                entity: weather.forecast_home
+                show_conditions: true
+                show_temperature: true
+                visibility:
+                  - condition: state
+                    entity: weather.forecast_home
+                    state_not: unavailable
+              - type: template
+                icon: mdi:lightbulb-on
+                icon_color: amber
+                content: "{{ states.light | selectattr('state','eq','on') | list | count }} on"
+              - type: template
+                icon: mdi:motion-sensor
+                icon_color: >
+                  {% set occupied = states('binary_sensor.tze200_3towulqd_ts0601_occupancy') == 'on'
+                                    or states('binary_sensor.human_presence_sensor_2') == 'on' %}
+                  {{ 'red' if occupied else 'grey' }}
+                content: >
+                  {% set s1 = states('binary_sensor.tze200_3towulqd_ts0601_occupancy') == 'on' %}
+                  {% set s2 = states('binary_sensor.human_presence_sensor_2') == 'on' %}
+                  {{ ([s1, s2] | select | list | count) ~ '/2' }}
+              - type: template
+                icon: mdi:door
+                icon_color: >
+                  {{ 'red' if states('binary_sensor.door_sensor_white') == 'on' else 'grey' }}
+                content: >
+                  {{ 'Open' if states('binary_sensor.door_sensor_white') == 'on' else 'Closed' }}
+                visibility:
+                  - condition: state
+                    entity: binary_sensor.door_sensor_white
+                    state_not: unavailable
+              - type: template
+                icon: mdi:web
+                icon_color: teal
+                content: "{{ states('sensor.vodafone_hg8247x6_8n_10_gateway_external_ip') }}"
+                visibility:
+                  - condition: state
+                    entity: sensor.vodafone_hg8247x6_8n_10_gateway_external_ip
+                    state_not: unavailable
+          - type: custom:mushroom-light-card
+            entity: light.all_lights
+            name: All Lights
+            use_light_color: true
+            show_brightness_control: true
+            show_color_temp_control: true
+            show_color_control: true
+            collapsible_controls: true
+            fill_container: true
+            grid_options:
+              columns: full
+              rows: 2
+            visibility:
+              - condition: state
+                entity: light.all_lights
+                state_not: unavailable
+
+      - type: grid
+        visibility:
+          - condition: or
+            conditions:
+              - condition: state
+                entity: light.living_room_lights
+                state_not: unavailable
+              - condition: state
+                entity: light.wifi_gu10
+                state_not: unavailable
+              - condition: state
+                entity: light.wifi_gu10_2
+                state_not: unavailable
+              - condition: state
+                entity: light.yeelink_monoa_488c_light
+                state_not: unavailable
+              - condition: state
+                entity: media_player.xgimi_horizon_pro_2
+                state_not: unavailable
+        cards:
+          - type: heading
+            heading: Living Room
+            heading_style: subtitle
+            icon: mdi:sofa
+          - type: custom:mushroom-light-card
+            entity: light.living_room_lights
+            name: Living Room (group)
+            use_light_color: true
+            show_brightness_control: true
+            show_color_control: true
+            collapsible_controls: true
+            fill_container: true
+            visibility:
+              - condition: state
+                entity: light.living_room_lights
+                state_not: unavailable
+          - type: custom:mushroom-light-card
+            entity: light.yeelink_monoa_488c_light
+            name: Torcher
+            use_light_color: true
+            show_brightness_control: true
+            show_color_temp_control: true
+            collapsible_controls: true
+            fill_container: true
+            visibility:
+              - condition: state
+                entity: light.yeelink_monoa_488c_light
+                state_not: unavailable
+          - type: custom:mushroom-light-card
+            entity: light.wifi_gu10
+            name: GU10 1
+            use_light_color: true
+            show_brightness_control: true
+            show_color_temp_control: true
+            collapsible_controls: true
+            fill_container: true
+            visibility:
+              - condition: state
+                entity: light.wifi_gu10
+                state_not: unavailable
+          - type: custom:mushroom-light-card
+            entity: light.wifi_gu10_2
+            name: GU10 2
+            use_light_color: true
+            show_brightness_control: true
+            show_color_temp_control: true
+            collapsible_controls: true
+            fill_container: true
+            visibility:
+              - condition: state
+                entity: light.wifi_gu10_2
+                state_not: unavailable
+          - type: custom:mushroom-media-player-card
+            entity: media_player.xgimi_horizon_pro_2
+            name: Projector
+            primary_info: name
+            secondary_info: state
+            icon_type: icon
+            show_volume_level: true
+            volume_controls:
+              - volume_set
+              - volume_buttons
+            media_controls:
+              - on_off
+              - play_pause_stop
+            collapsible_controls: true
+            fill_container: true
+            visibility:
+              - condition: state
+                entity: media_player.xgimi_horizon_pro_2
+                state_not: unavailable
+
+      - type: grid
+        visibility:
+          - condition: or
+            conditions:
+              - condition: state
+                entity: light.bedroom_lights
+                state_not: unavailable
+              - condition: state
+                entity: light.ewelink_ck_bl702_al_01_7009_z102lg03_1
+                state_not: unavailable
+              - condition: state
+                entity: light.ewelink_ck_bl702_al_01_7009_z102lg03_1_2
+                state_not: unavailable
+              - condition: state
+                entity: fan.dmaker_1c_8495_fan
+                state_not: unavailable
+              - condition: state
+                entity: climate.zhimi_mc2a_818a_heater
+                state_not: unavailable
+              - condition: state
+                entity: binary_sensor.human_presence_sensor_2
+                state_not: unavailable
+        cards:
+          - type: heading
+            heading: Bedroom
+            heading_style: subtitle
+            icon: mdi:bed
+          - type: custom:mushroom-light-card
+            entity: light.bedroom_lights
+            name: Bedroom (group)
+            use_light_color: true
+            show_brightness_control: true
+            show_color_temp_control: true
+            show_color_control: true
+            collapsible_controls: true
+            fill_container: true
+            visibility:
+              - condition: state
+                entity: light.bedroom_lights
+                state_not: unavailable
+          - type: custom:mushroom-light-card
+            entity: light.ewelink_ck_bl702_al_01_7009_z102lg03_1
+            name: Bulb 1
+            use_light_color: true
+            show_brightness_control: true
+            show_color_temp_control: true
+            collapsible_controls: true
+            fill_container: true
+            visibility:
+              - condition: state
+                entity: light.ewelink_ck_bl702_al_01_7009_z102lg03_1
+                state_not: unavailable
+          - type: custom:mushroom-light-card
+            entity: light.ewelink_ck_bl702_al_01_7009_z102lg03_1_2
+            name: Bulb 2
+            use_light_color: true
+            show_brightness_control: true
+            show_color_temp_control: true
+            collapsible_controls: true
+            fill_container: true
+            visibility:
+              - condition: state
+                entity: light.ewelink_ck_bl702_al_01_7009_z102lg03_1_2
+                state_not: unavailable
+          - type: custom:mushroom-fan-card
+            entity: fan.dmaker_1c_8495_fan
+            name: Tower Fan
+            show_oscillate_control: true
+            show_percentage_control: true
+            collapsible_controls: true
+            fill_container: true
+            visibility:
+              - condition: state
+                entity: fan.dmaker_1c_8495_fan
+                state_not: unavailable
+          - type: custom:mushroom-climate-card
+            entity: climate.zhimi_mc2a_818a_heater
+            name: Heater
+            show_temperature_control: true
+            hvac_modes:
+              - heat
+              - "off"
+            collapsible_controls: true
+            fill_container: true
+            visibility:
+              - condition: state
+                entity: climate.zhimi_mc2a_818a_heater
+                state_not: unavailable
+          - type: custom:mushroom-entity-card
+            entity: binary_sensor.human_presence_sensor_2
+            name: Presence
+            icon: mdi:account
+            icon_color: indigo
+            fill_container: true
+            visibility:
+              - condition: state
+                entity: binary_sensor.human_presence_sensor_2
+                state_not: unavailable
+          - type: custom:mushroom-entity-card
+            entity: sensor.zhimi_mc2a_818a_temperature
+            name: Room Temp
+            icon: mdi:thermometer
+            icon_color: orange
+            fill_container: true
+            visibility:
+              - condition: state
+                entity: sensor.zhimi_mc2a_818a_temperature
+                state_not: unavailable
+
+      - type: grid
+        visibility:
+          - condition: state
+            entity: media_player.office_speaker
+            state_not: unavailable
+        cards:
+          - type: heading
+            heading: Kitchen
+            heading_style: subtitle
+            icon: mdi:silverware-fork-knife
+          - type: custom:mushroom-media-player-card
+            entity: media_player.office_speaker
+            name: Speaker
+            primary_info: name
+            secondary_info: state
+            icon_type: icon
+            show_volume_level: true
+            volume_controls:
+              - volume_set
+              - volume_buttons
+            media_controls:
+              - play_pause_stop
+            collapsible_controls: true
+            fill_container: true
+
+      - type: grid
+        visibility:
+          - condition: or
+            conditions:
+              - condition: state
+                entity: vacuum.xiaomi_b106eu_5513_robot_cleaner
+                state_not: unavailable
+              - condition: state
+                entity: sensor.system_monitor_processor_temperature
+                state_not: unavailable
+              - condition: state
+                entity: sensor.hp_deskjet_2800_series_black_ink
+                state_not: unavailable
+        cards:
+          - type: heading
+            heading: Office
+            heading_style: subtitle
+            icon: mdi:desk
+          - type: custom:mushroom-vacuum-card
+            entity: vacuum.xiaomi_b106eu_5513_robot_cleaner
+            name: Vacuum
+            commands:
+              - on_off
+              - start_pause
+              - clean_spot
+              - return_home
+            collapsible_controls: true
+            fill_container: true
+            visibility:
+              - condition: state
+                entity: vacuum.xiaomi_b106eu_5513_robot_cleaner
+                state_not: unavailable
+          - type: custom:mushroom-entity-card
+            entity: sensor.xiaomi_b106eu_5513_battery_level
+            name: Vacuum battery
+            icon: mdi:battery
+            icon_color: green
+            fill_container: true
+            visibility:
+              - condition: state
+                entity: sensor.xiaomi_b106eu_5513_battery_level
+                state_not: unavailable
+          - type: custom:mushroom-entity-card
+            entity: sensor.system_monitor_processor_temperature
+            name: Pi CPU
+            icon: mdi:cpu-64-bit
+            icon_color: deep-orange
+            fill_container: true
+            visibility:
+              - condition: state
+                entity: sensor.system_monitor_processor_temperature
+                state_not: unavailable
+          - type: custom:mushroom-entity-card
+            entity: sensor.system_monitor_disk_free
+            name: Pi disk free
+            icon: mdi:harddisk
+            icon_color: blue
+            fill_container: true
+            visibility:
+              - condition: state
+                entity: sensor.system_monitor_disk_free
+                state_not: unavailable
+          - type: custom:mushroom-entity-card
+            entity: sensor.hp_deskjet_2800_series_black_ink
+            name: Printer black
+            icon: mdi:printer
+            icon_color: grey
+            fill_container: true
+            visibility:
+              - condition: state
+                entity: sensor.hp_deskjet_2800_series_black_ink
+                state_not: unavailable
+          - type: custom:mushroom-entity-card
+            entity: sensor.hp_deskjet_2800_series_tri_color_ink
+            name: Printer color
+            icon: mdi:printer
+            icon_color: pink
+            fill_container: true
+            visibility:
+              - condition: state
+                entity: sensor.hp_deskjet_2800_series_tri_color_ink
+                state_not: unavailable
+
+      - type: grid
+        visibility:
+          - condition: state
+            entity: binary_sensor.smart_toothbrush_e773_toothbrush
+            state_not: unavailable
+        cards:
+          - type: heading
+            heading: Bathroom
+            heading_style: subtitle
+            icon: mdi:shower
+          - type: custom:mushroom-entity-card
+            entity: binary_sensor.smart_toothbrush_e773_toothbrush
+            name: Toothbrush
+            icon: mdi:toothbrush
+            icon_color: cyan
+            fill_container: true
+          - type: custom:mushroom-entity-card
+            entity: sensor.smart_toothbrush_e773_battery
+            name: Toothbrush battery
+            icon: mdi:battery
+            icon_color: green
+            fill_container: true
+            visibility:
+              - condition: state
+                entity: sensor.smart_toothbrush_e773_battery
+                state_not: unavailable
+          - type: custom:mushroom-entity-card
+            entity: sensor.smart_toothbrush_e773_score
+            name: Brushing score
+            icon: mdi:chart-line
+            icon_color: indigo
+            fill_container: true
+            visibility:
+              - condition: state
+                entity: sensor.smart_toothbrush_e773_score
+                state_not: unavailable
+
+      - type: grid
+        visibility:
+          - condition: or
+            conditions:
+              - condition: state
+                entity: binary_sensor.tze200_3towulqd_ts0601_occupancy
+                state_not: unavailable
+              - condition: state
+                entity: binary_sensor.door_sensor_white
+                state_not: unavailable
+              - condition: state
+                entity: light.wled
+                state_not: unavailable
+        cards:
+          - type: heading
+            heading: Hallway & Other
+            heading_style: subtitle
+            icon: mdi:door
+          - type: custom:mushroom-entity-card
+            entity: binary_sensor.tze200_3towulqd_ts0601_occupancy
+            name: Corridor presence
+            icon: mdi:walk
+            icon_color: amber
+            fill_container: true
+            visibility:
+              - condition: state
+                entity: binary_sensor.tze200_3towulqd_ts0601_occupancy
+                state_not: unavailable
+          - type: custom:mushroom-entity-card
+            entity: binary_sensor.door_sensor_white
+            name: Front Door
+            icon: mdi:door
+            icon_color: red
+            fill_container: true
+            visibility:
+              - condition: state
+                entity: binary_sensor.door_sensor_white
+                state_not: unavailable
+          - type: custom:mushroom-light-card
+            entity: light.wled
+            name: WLED
+            use_light_color: true
+            show_brightness_control: true
+            show_color_control: true
+            collapsible_controls: true
+            fill_container: true
+            visibility:
+              - condition: state
+                entity: light.wled
+                state_not: unavailable
+
+      - type: grid
+        column_span: 3
+        cards:
+          - type: heading
+            heading: Weather
+            heading_style: subtitle
+            icon: mdi:weather-partly-cloudy
+          - type: weather-forecast
+            entity: weather.forecast_home
+            show_current: true
+            show_forecast: true
+            forecast_type: daily
+            theme: ios-dark-mode
+            visibility:
+              - condition: state
+                entity: weather.forecast_home
+                state_not: unavailable
