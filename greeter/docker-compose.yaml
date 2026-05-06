@@ -5,6 +5,6 @@ services:
     build: .
     ports:
       - "5050:5050"
-    env_file:
-      - .env
+    environment:
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
     restart: unless-stopped
