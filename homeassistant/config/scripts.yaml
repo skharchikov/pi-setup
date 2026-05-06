@@ -1,0 +1,17 @@
+clean_rooms:
+  alias: Clean Rooms
+  sequence:
+  - data:
+      entity_id: vacuum.xiaomi_b106eu_5513_robot_cleaner
+      command: spot_area
+      params:
+        rooms: '{{ rooms }}'
+        cleanings: '1'
+    action: vacuum.send_command
+  fields:
+    rooms:
+      selector:
+        text:
+      name: rooms
+      required: true
+  description: ''

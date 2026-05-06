@@ -1,0 +1,320 @@
+- id: '1747690893729'
+  alias: Door opened notification
+  description: ''
+  triggers:
+  - type: turned_on
+    device_id: 0d36a0f31404102e78cbc6c987fcb7e9
+    entity_id: 346d40c9a68ee0b5c67ab4f4138a8c32
+    domain: binary_sensor
+    trigger: device
+  conditions: []
+  actions:
+  - action: notify.mobile_app_pixel_8
+    metadata: {}
+    data:
+      message: The door was open!
+  mode: single
+- id: '1747871265818'
+  alias: Living Room Light - Turn ON When Human Detected
+  description: Turns on the living room light when human presence is detected after
+    sunset.
+  triggers:
+  - entity_id:
+    - binary_sensor.tze200_3towulqd_ts0601
+    - binary_sensor.tze200_3towulqd_ts0601_occupancy
+    from: 'off'
+    to: 'on'
+    trigger: state
+  conditions:
+  - condition: sun
+    after: sunset
+  actions:
+  - target:
+      device_id: 0fbb725040e8c38e93ef6b6ec76fb996
+    data:
+      brightness_pct: 40
+    action: light.turn_on
+  mode: restart
+- id: '1747871426290'
+  alias: Living Room Light - Smoothly Dim and Turn OFF When No Human Detected
+  description: Smoothly dims and turns off the living room light when no human presence
+    is detected.
+  triggers:
+  - entity_id:
+    - binary_sensor.tze200_3towulqd_ts0601
+    - binary_sensor.tze200_3towulqd_ts0601_occupancy
+    from: 'on'
+    to: 'off'
+    trigger: state
+  conditions:
+  - condition: sun
+    after: sunset
+  - condition: state
+    entity_id: binary_sensor.tze200_3towulqd_ts0601
+    state: 'off'
+  - condition: state
+    entity_id: binary_sensor.tze200_3towulqd_ts0601_occupancy
+    state: 'off'
+  actions:
+  - delay: 00:00:30
+  - condition: state
+    entity_id: binary_sensor.tze200_3towulqd_ts0601
+    state: 'off'
+  - condition: state
+    entity_id: binary_sensor.tze200_3towulqd_ts0601_occupancy
+    state: 'off'
+  - repeat:
+      count: 15
+      sequence:
+      - delay:
+          seconds: 2
+      - target:
+          device_id: 0fbb725040e8c38e93ef6b6ec76fb996
+        data:
+          brightness_step_pct: -3
+        action: light.turn_on
+  - target:
+      device_id: 0fbb725040e8c38e93ef6b6ec76fb996
+    action: light.turn_off
+  mode: restart
+- id: '1748035846259'
+  alias: Toggle lights
+  description: ''
+  triggers:
+  - device_id: 83d1f540fbdbf43509dacfc37a2d8be4
+    domain: zha
+    type: remote_button_short_press
+    subtype: button
+    trigger: device
+  conditions: []
+  actions:
+  - action: light.toggle
+    metadata: {}
+    data: {}
+    target:
+      device_id:
+      - 1c7b3b6e6bfcb0a1a0d56d2c640ba5b0
+      - 82be780f78dbfeac810bf1d9fbf34150
+  mode: single
+- id: '1748036470568'
+  alias: Dim up
+  description: ''
+  triggers:
+  - device_id: 83d1f540fbdbf43509dacfc37a2d8be4
+    domain: zha
+    type: device_rotated
+    subtype: right
+    trigger: device
+  - device_id: 83d1f540fbdbf43509dacfc37a2d8be4
+    domain: zha
+    type: device_rotated_slow
+    subtype: right
+    trigger: device
+  conditions: []
+  actions:
+  - action: light.turn_on
+    metadata: {}
+    data:
+      brightness_step_pct: 10
+    target:
+      device_id:
+      - 1c7b3b6e6bfcb0a1a0d56d2c640ba5b0
+      - 82be780f78dbfeac810bf1d9fbf34150
+  mode: single
+- id: '1748036955875'
+  alias: Dim down
+  description: ''
+  triggers:
+  - device_id: 83d1f540fbdbf43509dacfc37a2d8be4
+    domain: zha
+    type: device_rotated_slow
+    subtype: left
+    trigger: device
+  conditions: []
+  actions:
+  - action: light.turn_on
+    metadata: {}
+    data:
+      brightness_step_pct: -5
+    target:
+      device_id:
+      - 1c7b3b6e6bfcb0a1a0d56d2c640ba5b0
+      - 82be780f78dbfeac810bf1d9fbf34150
+  mode: single
+- id: '1748039976827'
+  alias: Scene on
+  description: ''
+  triggers:
+  - device_id: 83d1f540fbdbf43509dacfc37a2d8be4
+    domain: zha
+    type: remote_button_long_release
+    subtype: button
+    trigger: device
+  conditions: []
+  actions:
+  - action: scene.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id: scene.playful
+  mode: single
+- id: '1748175674043'
+  alias: Dynamic greeting
+  description: Greet when entering house (door opens, then motion within 10 seconds)
+  triggers:
+  - type: opened
+    device_id: 0d36a0f31404102e78cbc6c987fcb7e9
+    entity_id: 346d40c9a68ee0b5c67ab4f4138a8c32
+    domain: binary_sensor
+    trigger: device
+  conditions: []
+  actions:
+  - wait_for_trigger:
+    - type: occupied
+      device_id: b003eb15553189e5c2ebd655397fff3f
+      entity_id: fb3ed3e9eceb0fb59fce5fa9b200253b
+      domain: binary_sensor
+      trigger: device
+    timeout:
+      hours: 0
+      minutes: 0
+      seconds: 10
+      milliseconds: 0
+    continue_on_timeout: false
+  - data:
+      entity_id:
+      - sensor.greeting_sensor
+    action: homeassistant.update_entity
+  - action: chime_tts.say
+    metadata: {}
+    data:
+      message: '{{ states(''sensor.greeting_sensor'') }}'
+      tts_platform: tts.google_translate_en_com
+      chime_path: bells
+    target:
+      entity_id: media_player.office_speaker
+  mode: single
+- id: '1748338379450'
+  alias: Hourly weather announcement
+  description: Say time, temperature, and weather every hour from 9 AM to 10 PM
+  triggers:
+  - minutes: 0
+    trigger: time_pattern
+  conditions:
+  - condition: time
+    after: 09:00:00
+    before: '23:01:00'
+  actions:
+  - action: chime_tts.say
+    metadata: {}
+    data:
+      message: 'The time is {{ now().strftime(''%-I %p'') }}. It''s {{ state_attr(''weather.forecast_home'',
+        ''temperature'') }} degrees and {{ states(''weather.forecast_home'') }} outside.
+
+        '
+      tts_platform: tts.google_translate_en_com
+      chime_path: bells
+      tts_speed: 126
+    target:
+      entity_id: media_player.office_speaker
+  mode: single
+- id: '1748356456566'
+  alias: Bedroom Lights - Turn ON when motion detected
+  description: ''
+  triggers:
+  - type: turned_on
+    device_id: 72fd72dd8431f3217bedbc22c6402e49
+    entity_id: 788bd0f44c3355275594c67c6421d897
+    domain: binary_sensor
+    trigger: device
+  conditions:
+  - condition: state
+    entity_id: media_player.xgimi_horizon_pro_2
+    state: unavailable
+  - condition: time
+    after: '19:00:00'
+    before: '23:00:00'
+  actions:
+  - action: light.turn_on
+    metadata: {}
+    data: {}
+    target:
+      device_id:
+      - 1c7b3b6e6bfcb0a1a0d56d2c640ba5b0
+      - 82be780f78dbfeac810bf1d9fbf34150
+  mode: single
+- id: '1748358064902'
+  alias: Bedroom Lights - Smoothly dim and turn off when no presence detected
+  description: Smoothly dims and turns off the living room light when no human presence
+    is detected.
+  triggers:
+  - entity_id:
+    - binary_sensor.human_presence_sensor_2
+    from: 'on'
+    to: 'off'
+    trigger: state
+  conditions:
+  - condition: state
+    entity_id: binary_sensor.human_presence_sensor_2
+    state: 'off'
+  actions:
+  - delay: 00:00:30
+  - condition: state
+    entity_id: binary_sensor.human_presence_sensor_2
+    state: 'off'
+  - repeat:
+      count: 15
+      sequence:
+      - delay:
+          seconds: 2
+      - target:
+          device_id: 0fbb725040e8c38e93ef6b6ec76fb996
+        data:
+          brightness_step_pct: -3
+        action: light.turn_on
+  - action: light.turn_off
+    data: {}
+    target:
+      device_id:
+      - 1c7b3b6e6bfcb0a1a0d56d2c640ba5b0
+      - 82be780f78dbfeac810bf1d9fbf34150
+  mode: restart
+- id: '1751450735281'
+  alias: Turn OFF the fan when leaving the house
+  description: Turn off the fan when leaving the house
+  triggers:
+  - type: opened
+    device_id: 0d36a0f31404102e78cbc6c987fcb7e9
+    entity_id: 346d40c9a68ee0b5c67ab4f4138a8c32
+    domain: binary_sensor
+    trigger: device
+  conditions:
+  - type: is_occupied
+    condition: device
+    device_id: b003eb15553189e5c2ebd655397fff3f
+    entity_id: fb3ed3e9eceb0fb59fce5fa9b200253b
+    domain: binary_sensor
+  actions:
+  - wait_for_trigger:
+    - type: not_occupied
+      device_id: b003eb15553189e5c2ebd655397fff3f
+      entity_id: fb3ed3e9eceb0fb59fce5fa9b200253b
+      domain: binary_sensor
+      trigger: device
+    - type: not_opened
+      device_id: 0d36a0f31404102e78cbc6c987fcb7e9
+      entity_id: 346d40c9a68ee0b5c67ab4f4138a8c32
+      domain: binary_sensor
+      trigger: device
+    timeout:
+      hours: 0
+      minutes: 0
+      seconds: 10
+      milliseconds: 0
+    continue_on_timeout: false
+  - action: fan.turn_off
+    metadata: {}
+    data: {}
+    target:
+      device_id: eb4e2b15fd92bb7de7215dd18ccf14d2
+  mode: single

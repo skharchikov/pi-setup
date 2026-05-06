@@ -23,6 +23,7 @@ monitoring/prometheus/data/
 
 # Home Assistant — ignore runtime config except hand-editable IaC
 homeassistant/config/*
+homeassistant/config/www/*
 !homeassistant/config/configuration.yaml
 !homeassistant/config/automations.yaml
 !homeassistant/config/scripts.yaml
@@ -30,8 +31,6 @@ homeassistant/config/*
 !homeassistant/config/rest.yaml
 !homeassistant/config/themes/
 !homeassistant/config/blueprints/
-!homeassistant/config/python_scripts/
-!homeassistant/config/www/
 
 # Logs
 *.log

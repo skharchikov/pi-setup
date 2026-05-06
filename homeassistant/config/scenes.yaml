@@ -1,0 +1,67 @@
+- id: '1748039679730'
+  name: Playful
+  entities:
+    light.ewelink_ck_bl702_al_01_7009_z102lg03_1:
+      min_color_temp_kelvin: 2000
+      max_color_temp_kelvin: 7042
+      min_mireds: 142
+      max_mireds: 500
+      effect_list:
+      - 'off'
+      - colorloop
+      supported_color_modes:
+      - color_temp
+      - xy
+      effect: 'off'
+      color_mode: xy
+      brightness: 66
+      color_temp_kelvin:
+      color_temp:
+      hs_color:
+      - 276.923
+      - 40.784
+      rgb_color:
+      - 215
+      - 151
+      - 255
+      xy_color:
+      - 0.313
+      - 0.21
+      off_with_transition: false
+      off_brightness:
+      friendly_name: eWeLink CK-BL702-AL-01(7009_Z102LG03-1)
+      supported_features: 44
+      state: 'on'
+    light.ewelink_ck_bl702_al_01_7009_z102lg03_1_2:
+      min_color_temp_kelvin: 2000
+      max_color_temp_kelvin: 7042
+      min_mireds: 142
+      max_mireds: 500
+      effect_list:
+      - 'off'
+      - colorloop
+      supported_color_modes:
+      - color_temp
+      - xy
+      effect: 'off'
+      color_mode: xy
+      brightness: 51
+      color_temp_kelvin:
+      color_temp:
+      hs_color:
+      - 276.923
+      - 40.784
+      rgb_color:
+      - 215
+      - 151
+      - 255
+      xy_color:
+      - 0.313
+      - 0.21
+      off_with_transition: false
+      off_brightness:
+      friendly_name: eWeLink CK-BL702-AL-01(7009_Z102LG03-1)
+      supported_features: 44
+      state: 'on'
+  icon: mdi:party-popper
+  metadata: {}

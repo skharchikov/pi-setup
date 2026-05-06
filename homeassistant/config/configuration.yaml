@@ -1,0 +1,23 @@
+# Loads default set of integrations. Do not remove.
+default_config:
+
+# Load frontend themes from the themes folder
+frontend:
+  themes: !include_dir_merge_named themes
+
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+sensor:
+  - platform: rest
+    name: Greeting Sensor
+    resource: http://192.168.1.100:5050/greeting
+    method: GET
+    value_template: "{{ value_json.greeting }}"
+    scan_interval: 86400  # disable automatic polling
+python_script:
+rest_command: !include rest.yaml
+http:
+  use_x_forwarded_for: true
+  trusted_proxies:
+    - 172.17.0.2

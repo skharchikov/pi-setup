@@ -1,0 +1,127 @@
+blueprint:
+  name: ZHA - Moes Smart Knob for lights with color change v2
+  description: 'Control lights with a Moes Smart Knob. You can set functions for a
+    single press. This allows you to assign, e.g., a scene or anything else. Rotating
+    left/right will change the brightness smoothly of the selected light. Press and
+    rotate to smoothly step through the color temperature Long press allows you to
+    bind anything you want. For example, set scenes in home assistant to quickly change
+    to a desired light temperatur and brightness.
+
+    Not all functionality of the device is available at time of writing, e.g. double
+    press'
+  domain: automation
+  input:
+    remote:
+      name: Remote
+      description: Moes Knob to use
+      selector:
+        device:
+          integration: zha
+          model: TS004F
+          multiple: false
+    light:
+      name: Light(s)
+      description: The light(s) to control
+      selector:
+        target:
+          entity:
+          - domain:
+            - light
+    single_press:
+      name: Single press
+      description: Action to run on single press
+      default: []
+      selector:
+        action: {}
+    long_press:
+      name: Long press
+      description: Action to run on long press.
+      default: []
+      selector:
+        action: {}
+  source_url: https://gist.github.com/skippengs/9caa57d7894cd2e39491c57ce9a10804
+mode: restart
+max_exceeded: silent
+trigger:
+- platform: event
+  event_type: zha_event
+  event_data:
+    device_id: !input remote
+action:
+- variables:
+    thelight: !input light
+    command: '{{ trigger.event.data.command }}'
+    cluster_id: '{{ trigger.event.data.cluster_id }}'
+    args: '{% if trigger.event.data.args == 0 %} 0 {% elif trigger.event.data.args[0]
+      == 1 %} 1 {% elif trigger.event.data.args[0] == 3 %} 3 {% endif %}'
+- choose:
+  - conditions:
+    - '{{ command == ''toggle'' }}'
+    - '{{ cluster_id == 6 }}'
+    sequence: !input single_press
+  - conditions:
+    - '{{ command == ''stop_move_step'' }}'
+    - '{{ cluster_id == 768 }}'
+    sequence: !input long_press
+  - conditions:
+    - '{{ command == ''step'' }}'
+    - '{{ cluster_id == 8 }}'
+    - '{{ args == 0 }}'
+    sequence:
+    - repeat:
+        while:
+        - condition: template
+          value_template: '{{ repeat.index < 2 }}'
+        sequence:
+        - service_template: light.turn_on
+          target: !input light
+          data_template:
+            brightness_step_pct: 10
+            transition: 0.5
+  - conditions:
+    - '{{ command == ''step'' }}'
+    - '{{ cluster_id == 8 }}'
+    - '{{ args == 1 }}'
+    sequence:
+    - repeat:
+        while:
+        - condition: template
+          value_template: '{{ repeat.index < 2 }}'
+        sequence:
+        - service_template: light.turn_on
+          target: !input light
+          data_template:
+            brightness_step_pct: -10
+            transition: 0.5
+  - conditions:
+    - '{{ command == ''step_color_temp'' }}'
+    - '{{ cluster_id == 768 }}'
+    - '{{ args == 1 }}'
+    sequence:
+    - repeat:
+        while:
+        - condition: template
+          value_template: '{{ repeat.index < 2 }}'
+        sequence:
+        - service_template: light.turn_on
+          target: !input light
+          data_template:
+            color_temp: '{{ state_attr(thelight.entity_id, ''color_temp'') | default(0,
+              True) | int + 30}}'
+            transition: 0.5
+  - conditions:
+    - '{{ command == ''step_color_temp'' }}'
+    - '{{ cluster_id == 768 }}'
+    - '{{ args == 3 }}'
+    sequence:
+    - repeat:
+        while:
+        - condition: template
+          value_template: '{{ repeat.index < 2 }}'
+        sequence:
+        - service_template: light.turn_on
+          target: !input light
+          data_template:
+            color_temp: '{{ state_attr(thelight.entity_id, ''color_temp'') | default(0,
+              True) | int - 30}}'
+            transition: 0.5
