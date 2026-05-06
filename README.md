@@ -12,6 +12,7 @@ Single source of truth for Raspberry Pi homelab Docker services. Tracked in Git,
 |-----|------------|------|-------|
 | `adguard/` | adguardhome | 53 (DNS) | Runtime data in `adguard/{confdir,workdir}/` (gitignored) |
 | `greeter/` | greeter-greeting_api | 5050 | Flask API, built locally from `Dockerfile` |
+| `homeassistant/` | homeassistant | 8123 | host network + privileged; Zigbee dongle on `/dev/ttyUSB0`; runtime in `homeassistant/config/` (gitignored) |
 | `monitoring/` | grafana, prometheus, cadvisor, node-exporter | 3000 (Grafana) | Provisioning in `monitoring/grafana/provisioning/` |
 | `openclaw/` | openclaw-gateway | 18789 | Built locally from `Dockerfile` |
 | `portainer/` | portainer | 9000 | Self-hosted; data at `/opt/portainer` (host bind) |
@@ -28,7 +29,7 @@ cp openclaw/.env.example openclaw/.env           && $EDITOR openclaw/.env
 cp monitoring/grafana/.env.example monitoring/grafana/.env && $EDITOR monitoring/grafana/.env
 
 # Bring up each stack
-for svc in adguard greeter monitoring openclaw portainer; do
+for svc in adguard greeter homeassistant monitoring openclaw portainer; do
   (cd "$svc" && docker compose up -d)
 done
 ```
@@ -45,6 +46,7 @@ done
 
 Also gitignored:
 - `adguard/{confdir,workdir}/` — AdGuard runtime data
+- `homeassistant/config/` — HA runtime config (owned by root inside container)
 - `monitoring/{grafana,prometheus}/data/` — TSDB + Grafana DB
 
 ## Deployment (Portainer Git Stacks)
@@ -66,6 +68,7 @@ Push to `main` → Portainer pulls within polling window → redeploys changed s
 ```
 adguard/        DNS filter
 greeter/        Greeting API (Python/Flask)
+homeassistant/  Home Assistant (host net, Zigbee USB)
 monitoring/     Grafana + Prometheus + exporters
 openclaw/       OpenClaw gateway
 portainer/      Container management UI

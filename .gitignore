@@ -21,6 +21,9 @@ homer/assets/themes/
 monitoring/grafana/data/
 monitoring/prometheus/data/
 
+# Home Assistant runtime config
+homeassistant/config/
+
 # Logs
 *.log
 logs/
