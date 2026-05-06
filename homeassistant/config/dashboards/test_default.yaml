@@ -3,22 +3,19 @@ views:
   - title: Home
     path: home
     type: sections
-    max_columns: 2
+    max_columns: 1
+    dense_section_placement: false
+    top_margin: false
     sections:
       - type: grid
-        column_span: 2
         cards:
-          - type: heading
-            heading: Welcome
-            heading_style: title
-            icon: mdi:home-account
+          - type: custom:mushroom-title-card
+            title: "Hi {{ states('person.sergei_kharchikov') | replace('home','Home') | title }}"
+            subtitle: "{{ now().strftime('%A %-d %B') }}"
+            alignment: start
           - type: custom:mushroom-chips-card
-            alignment: center
+            alignment: justify
             chips:
-              - type: entity
-                entity: person.sergei_kharchikov
-                content_info: name
-                icon_color: blue
               - type: weather
                 entity: weather.forecast_home
                 show_conditions: true
@@ -28,14 +25,53 @@ views:
                     entity: weather.forecast_home
                     state_not: unavailable
               - type: template
-                entity: sensor.vodafone_hg8247x6_8n_10_gateway_external_ip
-                content: "{{ states('sensor.vodafone_hg8247x6_8n_10_gateway_external_ip') }}"
+                icon: mdi:lightbulb-on
+                icon_color: amber
+                content: "{{ states.light | selectattr('state','eq','on') | list | count }}"
+                tap_action:
+                  action: navigate
+                  navigation_path: "#lights"
+              - type: template
+                icon: mdi:motion-sensor
+                icon_color: >
+                  {% set occupied = states('binary_sensor.tze200_3towulqd_ts0601_occupancy') == 'on'
+                                    or states('binary_sensor.human_presence_sensor_2') == 'on' %}
+                  {{ 'red' if occupied else 'grey' }}
+                content: >
+                  {% set s1 = states('binary_sensor.tze200_3towulqd_ts0601_occupancy') == 'on' %}
+                  {% set s2 = states('binary_sensor.human_presence_sensor_2') == 'on' %}
+                  {{ ([s1, s2] | select | list | count) ~ '/2' }}
+              - type: template
                 icon: mdi:web
                 icon_color: teal
+                content: "{{ states('sensor.vodafone_hg8247x6_8n_10_gateway_external_ip') }}"
                 visibility:
                   - condition: state
                     entity: sensor.vodafone_hg8247x6_8n_10_gateway_external_ip
                     state_not: unavailable
+
+      - type: grid
+        cards:
+          - type: heading
+            heading: Quick actions
+            heading_style: subtitle
+            icon: mdi:gesture-tap-button
+          - type: custom:mushroom-light-card
+            entity: light.all_lights
+            name: All Lights
+            use_light_color: true
+            show_brightness_control: true
+            show_color_temp_control: true
+            show_color_control: true
+            collapsible_controls: true
+            fill_container: true
+            grid_options:
+              columns: full
+              rows: 2
+            visibility:
+              - condition: state
+                entity: light.all_lights
+                state_not: unavailable
 
       - type: grid
         cards:
@@ -48,6 +84,9 @@ views:
             name: Living Room
             icon: mdi:sofa
             icon_color: amber
+            fill_container: true
+            grid_options:
+              columns: full
             visibility:
               - condition: state
                 entity: binary_sensor.tze200_3towulqd_ts0601_occupancy
@@ -57,33 +96,20 @@ views:
             name: Bedroom
             icon: mdi:bed
             icon_color: indigo
+            fill_container: true
+            grid_options:
+              columns: full
             visibility:
               - condition: state
                 entity: binary_sensor.human_presence_sensor_2
                 state_not: unavailable
 
       - type: grid
-        column_span: 2
         cards:
           - type: heading
             heading: Lights
             heading_style: subtitle
             icon: mdi:lightbulb-group
-          - type: custom:mushroom-light-card
-            entity: light.all_lights
-            name: All Lights
-            use_light_color: true
-            show_brightness_control: true
-            show_color_temp_control: true
-            show_color_control: true
-            collapsible_controls: true
-            grid_options:
-              columns: 12
-              rows: 2
-            visibility:
-              - condition: state
-                entity: light.all_lights
-                state_not: unavailable
           - type: custom:mushroom-light-card
             entity: light.bedroom_lights
             name: Bedroom
@@ -92,8 +118,9 @@ views:
             show_color_temp_control: true
             show_color_control: true
             collapsible_controls: true
+            fill_container: true
             grid_options:
-              columns: 6
+              columns: full
               rows: 2
             visibility:
               - condition: state
@@ -106,8 +133,9 @@ views:
             show_brightness_control: true
             show_color_control: true
             collapsible_controls: true
+            fill_container: true
             grid_options:
-              columns: 6
+              columns: full
               rows: 2
             visibility:
               - condition: state
@@ -120,8 +148,9 @@ views:
             show_brightness_control: true
             show_color_temp_control: true
             collapsible_controls: true
+            fill_container: true
             grid_options:
-              columns: 12
+              columns: full
               rows: 2
             visibility:
               - condition: state
@@ -141,8 +170,9 @@ views:
             show_percentage_control: true
             show_direction_control: false
             collapsible_controls: true
+            fill_container: true
             grid_options:
-              columns: 12
+              columns: full
               rows: 2
             visibility:
               - condition: state
@@ -169,8 +199,9 @@ views:
               - on_off
               - play_pause_stop
             collapsible_controls: true
+            fill_container: true
             grid_options:
-              columns: 12
+              columns: full
               rows: 2
             visibility:
               - condition: state
@@ -185,8 +216,9 @@ views:
               - clean_spot
               - return_home
             collapsible_controls: true
+            fill_container: true
             grid_options:
-              columns: 12
+              columns: full
               rows: 2
             visibility:
               - condition: state
@@ -194,7 +226,6 @@ views:
                 state_not: unavailable
 
       - type: grid
-        column_span: 2
         cards:
           - type: heading
             heading: Weather
@@ -206,6 +237,9 @@ views:
             show_forecast: true
             forecast_type: daily
             theme: ios-dark-mode
+            grid_options:
+              columns: full
+              rows: 4
             visibility:
               - condition: state
                 entity: weather.forecast_home
