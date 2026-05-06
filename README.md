@@ -5,8 +5,6 @@ Single source of truth for Raspberry Pi homelab Docker services. Tracked in Git,
 ## Host
 
 - Raspberry Pi (Debian Bookworm, ARM64)
-- IP: `192.168.1.100`
-- User: `callmestech`
 
 ## Services
 
