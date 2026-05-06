@@ -46,7 +46,7 @@ done
 
 Also gitignored:
 - `adguard/{confdir,workdir}/` — AdGuard runtime data
-- `homeassistant/config/` — HA runtime config (owned by root inside container)
+- `homeassistant/config/*` except hand-editable IaC (`configuration.yaml`, `automations.yaml`, `scripts.yaml`, `scenes.yaml`, `rest.yaml`, `themes/`, `blueprints/`, `python_scripts/`, `www/`). Skipped: `secrets.yaml`, `.storage/`, `.cloud/`, `*.db*`, `zigbee.db*`, `backups/`, `deps/`, `tts/`, `custom_components/`, logs.
 - `monitoring/{grafana,prometheus}/data/` — TSDB + Grafana DB
 
 ## Deployment (Portainer Git Stacks)
