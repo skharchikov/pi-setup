@@ -14,11 +14,14 @@ views:
             subtitle: "{{ now().strftime('%A %-d %B') }}"
             alignment: start
           - type: custom:mushroom-chips-card
-            alignment: justify
+            alignment: center
+            grid_options:
+              columns: full
+              rows: 1
             chips:
               - type: weather
                 entity: weather.forecast_home
-                show_conditions: true
+                show_conditions: false
                 show_temperature: true
                 visibility:
                   - condition: state
@@ -28,9 +31,6 @@ views:
                 icon: mdi:lightbulb-on
                 icon_color: amber
                 content: "{{ states.light | selectattr('state','eq','on') | list | count }}"
-                tap_action:
-                  action: navigate
-                  navigation_path: "#lights"
               - type: template
                 icon: mdi:motion-sensor
                 icon_color: >
@@ -41,16 +41,12 @@ views:
                   {% set s1 = states('binary_sensor.tze200_3towulqd_ts0601_occupancy') == 'on' %}
                   {% set s2 = states('binary_sensor.human_presence_sensor_2') == 'on' %}
                   {{ ([s1, s2] | select | list | count) ~ '/2' }}
-              - type: template
-                icon: mdi:web
-                icon_color: teal
-                content: "{{ states('sensor.vodafone_hg8247x6_8n_10_gateway_external_ip') }}"
-                visibility:
-                  - condition: state
-                    entity: sensor.vodafone_hg8247x6_8n_10_gateway_external_ip
-                    state_not: unavailable
 
       - type: grid
+        visibility:
+          - condition: state
+            entity: light.all_lights
+            state_not: unavailable
         cards:
           - type: heading
             heading: Quick actions
@@ -74,6 +70,15 @@ views:
                 state_not: unavailable
 
       - type: grid
+        visibility:
+          - condition: or
+            conditions:
+              - condition: state
+                entity: binary_sensor.tze200_3towulqd_ts0601_occupancy
+                state_not: unavailable
+              - condition: state
+                entity: binary_sensor.human_presence_sensor_2
+                state_not: unavailable
         cards:
           - type: heading
             heading: Presence
@@ -105,6 +110,18 @@ views:
                 state_not: unavailable
 
       - type: grid
+        visibility:
+          - condition: or
+            conditions:
+              - condition: state
+                entity: light.bedroom_lights
+                state_not: unavailable
+              - condition: state
+                entity: light.living_room_lights
+                state_not: unavailable
+              - condition: state
+                entity: light.yeelink_monoa_488c_light
+                state_not: unavailable
         cards:
           - type: heading
             heading: Lights
@@ -158,6 +175,10 @@ views:
                 state_not: unavailable
 
       - type: grid
+        visibility:
+          - condition: state
+            entity: fan.dmaker_1c_8495_fan
+            state_not: unavailable
         cards:
           - type: heading
             heading: Climate
@@ -180,6 +201,15 @@ views:
                 state_not: unavailable
 
       - type: grid
+        visibility:
+          - condition: or
+            conditions:
+              - condition: state
+                entity: media_player.xgimi_horizon_pro_2
+                state_not: unavailable
+              - condition: state
+                entity: vacuum.xiaomi_b106eu_5513_robot_cleaner
+                state_not: unavailable
         cards:
           - type: heading
             heading: Media & Cleaning
@@ -226,6 +256,10 @@ views:
                 state_not: unavailable
 
       - type: grid
+        visibility:
+          - condition: state
+            entity: weather.forecast_home
+            state_not: unavailable
         cards:
           - type: heading
             heading: Weather
@@ -244,3 +278,22 @@ views:
               - condition: state
                 entity: weather.forecast_home
                 state_not: unavailable
+
+      - type: grid
+        visibility:
+          - condition: state
+            entity: sensor.vodafone_hg8247x6_8n_10_gateway_external_ip
+            state_not: unavailable
+        cards:
+          - type: heading
+            heading: Network
+            heading_style: subtitle
+            icon: mdi:web
+          - type: custom:mushroom-entity-card
+            entity: sensor.vodafone_hg8247x6_8n_10_gateway_external_ip
+            name: WAN IP
+            icon: mdi:web
+            icon_color: teal
+            fill_container: true
+            grid_options:
+              columns: full
