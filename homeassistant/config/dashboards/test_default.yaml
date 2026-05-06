@@ -1,0 +1,95 @@
+views:
+- title: Home
+  badges: []
+  sections:
+  - type: grid
+    cards:
+    - type: custom:mushroom-person-card
+      entity: person.sergei_kharchikov
+    - type: custom:mushroom-entity-card
+      entity: binary_sensor.tze200_3towulqd_ts0601_occupancy
+      icon: mdi:account
+    - type: custom:mushroom-entity-card
+      entity: binary_sensor.human_presence_sensor_2
+      name: Bedroom sensor
+    - type: custom:mushroom-light-card
+      entity: light.all_lights
+      use_light_color: true
+      show_color_control: true
+      show_color_temp_control: true
+      grid_options:
+        columns: 12
+        rows: 2
+      show_brightness_control: true
+    - type: custom:mushroom-light-card
+      entity: light.bedroom_lights
+      use_light_color: true
+      show_brightness_control: true
+      show_color_temp_control: true
+      show_color_control: true
+      grid_options:
+        columns: 12
+        rows: 2
+      fill_container: true
+      collapsible_controls: false
+    - type: custom:mushroom-light-card
+      entity: light.living_room_lights
+      show_brightness_control: true
+      show_color_control: true
+    - type: custom:mushroom-light-card
+      entity: light.yeelink_monoa_488c_light
+      use_light_color: true
+      show_brightness_control: true
+      show_color_temp_control: true
+      grid_options:
+        columns: 12
+        rows: 2
+    - type: custom:mushroom-media-player-card
+      entity: media_player.xgimi_horizon_pro_2
+      primary_info: name
+      show_volume_level: true
+      volume_controls:
+      - volume_set
+      - volume_buttons
+      media_controls:
+      - on_off
+      - play_pause_stop
+      grid_options:
+        columns: 12
+        rows: 2
+      name: Projector
+      secondary_info: state
+      icon_type: icon
+    - type: custom:mushroom-vacuum-card
+      entity: vacuum.xiaomi_b106eu_5513_robot_cleaner
+      commands:
+      - on_off
+      - start_pause
+      - clean_spot
+      - return_home
+      grid_options:
+        columns: 12
+        rows: 2
+    - type: vertical-stack
+      cards: []
+    - type: custom:mushroom-fan-card
+      entity: fan.dmaker_1c_8495_fan
+      show_oscillate_control: true
+      show_percentage_control: true
+      show_direction_control: false
+      grid_options:
+        columns: 12
+        rows: 2
+    - type: custom:mushroom-entity-card
+      entity: sensor.vodafone_hg8247x6_8n_10_gateway_external_ip
+  - type: grid
+    cards:
+    - type: heading
+      heading_style: title
+    - show_current: true
+      show_forecast: true
+      type: weather-forecast
+      entity: weather.forecast_home
+      forecast_type: daily
+      theme: ios-dark-mode
+  header: {}

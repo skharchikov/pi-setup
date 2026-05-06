@@ -21,3 +21,13 @@ http:
   use_x_forwarded_for: true
   trusted_proxies:
     - 172.17.0.2
+
+# Lovelace: default + map + dashboard-test stay UI-managed; test-default is YAML
+lovelace:
+  mode: storage
+  dashboards:
+    test-default:
+      mode: yaml
+      filename: dashboards/test_default.yaml
+      title: Mobile
+      show_in_sidebar: true
